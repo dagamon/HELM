@@ -1,0 +1,26 @@
+{
+  "endpoint": "/ws/status",
+  "sample_messages": [
+    {
+      "entity_type": "service",
+      "entity_id": 21,
+      "status": "running",
+      "pid": "<PID>",
+      "metrics": {
+        "cpu_percent": 0.0,
+        "memory_mb": 174.3
+      },
+      "ts": "<ISO>"
+    }
+  ],
+  "payload_shape": {
+    "entity_type": "service|script",
+    "entity_id": "<INT>",
+    "status": "running|stopped|crashed|success",
+    "pid": "<PID>|null",
+    "metrics": {
+      "cpu_percent": "<FLOAT>",
+      "memory_mb": "<FLOAT>"
+    }
+  }
+}

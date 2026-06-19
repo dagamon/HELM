@@ -1,0 +1,13 @@
+{
+  "method": "GET",
+  "path": "/api/system/info",
+  "status": 200,
+  "response": {
+    "os": "Windows",
+    "runtime_version": "<RUNTIME>",
+    "platform": "windows",
+    "uptime_seconds": "<NUM>",
+    "service_count": 12,
+    "running_count": 1
+  }
+}

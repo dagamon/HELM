@@ -1,0 +1,323 @@
+[
+  {
+    "name": "linux_simple",
+    "command": "echo hello",
+    "args": [],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "echo",
+      "hello"
+    ]
+  },
+  {
+    "name": "linux_node_with_args",
+    "command": "node",
+    "args": [
+      "app.js"
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "node",
+      "app.js"
+    ]
+  },
+  {
+    "name": "linux_sh_script",
+    "command": "./run.sh",
+    "args": [
+      "arg"
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "bash",
+      "./run.sh",
+      "arg"
+    ]
+  },
+  {
+    "name": "linux_sh_no_args",
+    "command": "./go.sh",
+    "args": [],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "bash",
+      "./go.sh"
+    ]
+  },
+  {
+    "name": "linux_node_no_args",
+    "command": "node",
+    "args": [],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "node"
+    ]
+  },
+  {
+    "name": "linux_shell_pipe",
+    "command": "ls | grep foo",
+    "args": [],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "bash",
+      "-lc",
+      "ls | grep foo"
+    ]
+  },
+  {
+    "name": "linux_shell_with_args",
+    "command": "echo",
+    "args": [
+      "hello world",
+      "$VAR"
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "bash",
+      "-lc",
+      "echo 'hello world' '$VAR'"
+    ]
+  },
+  {
+    "name": "linux_shell_empty_arg",
+    "command": "echo",
+    "args": [
+      ""
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "bash",
+      "-lc",
+      "echo ''"
+    ]
+  },
+  {
+    "name": "linux_shell_no_args",
+    "command": "uptime",
+    "args": [],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "bash",
+      "-lc",
+      "uptime"
+    ]
+  },
+  {
+    "name": "linux_shell_quote_single",
+    "command": "echo",
+    "args": [
+      "it's"
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "bash",
+      "-lc",
+      "echo 'it'\"'\"'s'"
+    ]
+  },
+  {
+    "name": "linux_multi_args",
+    "command": "node",
+    "args": [
+      "app.js",
+      "--port",
+      "3000"
+    ],
+    "platform": "linux",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "node",
+      "app.js",
+      "--port",
+      "3000"
+    ]
+  },
+  {
+    "name": "windows_bat",
+    "command": "script.bat",
+    "args": [
+      "arg"
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "cmd.exe",
+      "/c",
+      "script.bat",
+      "arg"
+    ]
+  },
+  {
+    "name": "windows_bat_no_args",
+    "command": "run.bat",
+    "args": [],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "cmd.exe",
+      "/c",
+      "run.bat"
+    ]
+  },
+  {
+    "name": "windows_cmd_lowercase",
+    "command": "run.cmd",
+    "args": [
+      "a",
+      "b"
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "cmd.exe",
+      "/c",
+      "run.cmd",
+      "a",
+      "b"
+    ]
+  },
+  {
+    "name": "windows_cmd_uppercase",
+    "command": "Run.CMD",
+    "args": [],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "Run.CMD"
+    ]
+  },
+  {
+    "name": "windows_shell_amp",
+    "command": "dir & echo done",
+    "args": [],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "dir & echo done"
+    ]
+  },
+  {
+    "name": "windows_shell_args_quote",
+    "command": "echo",
+    "args": [
+      "hello world"
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "echo \"hello world\""
+    ]
+  },
+  {
+    "name": "windows_shell_no_args",
+    "command": "dir",
+    "args": [],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "dir"
+    ]
+  },
+  {
+    "name": "windows_shell_empty_arg",
+    "command": "echo",
+    "args": [
+      ""
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "echo \"\""
+    ]
+  },
+  {
+    "name": "windows_shell_quote_embedded",
+    "command": "echo",
+    "args": [
+      "say \"hi\""
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "shell",
+    "expected": [
+      "cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "echo \"say \\\"hi\\\"\""
+    ]
+  },
+  {
+    "name": "windows_quoted_script_path",
+    "command": "\"C:\\Path With Space\\app.bat\"",
+    "args": [
+      "x"
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "\"C:\\Path With Space\\app.bat\"",
+      "x"
+    ]
+  },
+  {
+    "name": "windows_exe_no_path_lookup",
+    "command": "C:\\Tools\\my.exe",
+    "args": [
+      "--flag"
+    ],
+    "platform": "windows",
+    "venv_path": null,
+    "run_mode": "exec",
+    "expected": [
+      "C:\\Tools\\my.exe",
+      "--flag"
+    ]
+  }
+]

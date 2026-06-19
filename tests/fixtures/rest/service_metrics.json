@@ -1,0 +1,6 @@
+{
+  "method": "GET",
+  "path": "/api/services/1/metrics",
+  "status": 200,
+  "response": []
+}

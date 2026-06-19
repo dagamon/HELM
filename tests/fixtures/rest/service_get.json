@@ -1,0 +1,45 @@
+{
+  "method": "GET",
+  "path": "/api/services/1",
+  "status": 200,
+  "response": {
+    "name": "THANE FASTAPI",
+    "description": "Бухгалтерский сервис",
+    "type": "python",
+    "command": "py -m uvicorn app.main:app ",
+    "cwd": "J:/dagamon_programs/THANE/server",
+    "venv_path": "J:/dagamon_programs/THANE/server/venv",
+    "args": [
+      "--host",
+      "127.0.0.1",
+      "--port",
+      "8000"
+    ],
+    "env": {
+      "NEW_VAR": ""
+    },
+    "url": "http://127.0.0.1:8000/docs",
+    "health_check_url": null,
+    "health_check_interval": 30,
+    "auto_start": false,
+    "restart_on_crash": false,
+    "platform": "windows",
+    "tags": [
+      "backend",
+      "api",
+      "fastapi"
+    ],
+    "depends_on": null,
+    "webhook_url": null,
+    "id": 1,
+    "status": "<STATUS>",
+    "pid": "<PID>",
+    "created_at": "2026-03-04 21:45:35",
+    "updated_at": "2026-04-18 21:27:21",
+    "manifest_path": null,
+    "binary_path": null,
+    "cargo_profile": "release",
+    "cargo_features": null,
+    "prebuild": false
+  }
+}

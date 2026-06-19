@@ -1,0 +1,1 @@
+ALTER TABLE scripts ADD COLUMN cron_enabled INTEGER DEFAULT 0;

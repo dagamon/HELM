@@ -1,0 +1,39 @@
+{
+  "method": "POST",
+  "path": "/api/services",
+  "request": {
+    "name": "__fixture_test__",
+    "type": "shell",
+    "command": "echo hello"
+  },
+  "status": 201,
+  "response": {
+    "name": "__fixture_test__",
+    "description": "fixture capture test service",
+    "type": "shell",
+    "command": "echo hello",
+    "cwd": null,
+    "venv_path": null,
+    "args": null,
+    "env": null,
+    "url": null,
+    "health_check_url": null,
+    "health_check_interval": 30,
+    "auto_start": false,
+    "restart_on_crash": false,
+    "platform": "all",
+    "tags": null,
+    "depends_on": null,
+    "webhook_url": null,
+    "id": 28,
+    "status": "<STATUS>",
+    "pid": "<PID>",
+    "created_at": "2026-05-23 14:21:38",
+    "updated_at": "2026-05-23 14:21:38",
+    "manifest_path": null,
+    "binary_path": null,
+    "cargo_profile": "release",
+    "cargo_features": null,
+    "prebuild": false
+  }
+}

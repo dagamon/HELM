@@ -1,0 +1,23 @@
+{
+  "method": "POST",
+  "path": "/api/scripts",
+  "request": {
+    "name": "__fixture_script__",
+    "command": "echo hi"
+  },
+  "status": 201,
+  "response": {
+    "name": "__fixture_script__",
+    "description": null,
+    "command": "echo hi",
+    "run_mode": "exec",
+    "cwd": null,
+    "args": null,
+    "platform": "all",
+    "tags": null,
+    "cron_schedule": null,
+    "cron_enabled": false,
+    "id": 14,
+    "created_at": "2026-05-23 14:21:39"
+  }
+}

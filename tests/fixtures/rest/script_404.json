@@ -1,0 +1,8 @@
+{
+  "method": "GET",
+  "path": "/api/scripts/99999",
+  "status": 404,
+  "response": {
+    "detail": "Script 99999 not found"
+  }
+}

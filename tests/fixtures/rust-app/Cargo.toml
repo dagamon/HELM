@@ -1,0 +1,14 @@
+[package]
+name = "helm-rust-test-app"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "helm-rust-test-app"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 0
+codegen-units = 16
+debug = false
+strip = true

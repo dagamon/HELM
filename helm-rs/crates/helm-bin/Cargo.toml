@@ -1,0 +1,31 @@
+[package]
+name = "helm-bin"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "helm"
+path = "src/main.rs"
+
+[dependencies]
+helm-api = { path = "../helm-api" }
+helm-db = { path = "../helm-db" }
+helm-proc = { path = "../helm-proc" }
+axum = { workspace = true }
+tower-http = { workspace = true }
+tokio = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+figment = { workspace = true }
+dotenvy = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+anyhow = { workspace = true }
+
+[dev-dependencies]
+reqwest = { workspace = true }
+sqlx = { workspace = true }
+tokio = { workspace = true }
+serde_json = { workspace = true }
+regex = "1"
+tempfile = "3"

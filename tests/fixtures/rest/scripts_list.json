@@ -1,0 +1,142 @@
+{
+  "method": "GET",
+  "path": "/api/scripts",
+  "status": 200,
+  "response": [
+    {
+      "name": "Moscow Weather",
+      "description": "Fetches current weather in Moscow via open-meteo.com",
+      "command": "C:/Users/Dagamon/AppData/Local/Programs/Python/Python312/python.exe",
+      "run_mode": "exec",
+      "cwd": null,
+      "args": [
+        "J:/dagamon_programs/scripts/moscow_weather.py"
+      ],
+      "platform": "all",
+      "tags": [
+        "weather",
+        "utility"
+      ],
+      "cron_schedule": "*/30 * * * *",
+      "cron_enabled": false,
+      "id": 1,
+      "created_at": "2026-03-05 10:58:44"
+    },
+    {
+      "name": "CuddlyPi OpenClaw Tunnel",
+      "description": "SSH-??????? ? OpenClaw (???? 18789), ?????????????? ??? ??????",
+      "command": "C:/Users/Dagamon/AppData/Local/Programs/Python/Python312/python.exe",
+      "run_mode": "exec",
+      "cwd": null,
+      "args": [
+        "J:/dagamon_programs/HELM/scripts/cuddlypi_openclaw.py"
+      ],
+      "platform": "windows",
+      "tags": [
+        "ssh",
+        "tunnel",
+        "openclaw",
+        "cuddly-pi"
+      ],
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 5,
+      "created_at": "2026-03-11 14:54:31"
+    },
+    {
+      "name": "localhost 5173 tunnel",
+      "description": "Open public localtunnel URL for BARD Mini App",
+      "command": "npx",
+      "run_mode": "exec",
+      "cwd": "J:/dagamon_programs/BARD",
+      "args": [
+        "--yes",
+        "localtunnel@2.0.2",
+        "--port",
+        "5173",
+        "--local-host",
+        "localhost"
+      ],
+      "platform": "windows",
+      "tags": [
+        "bard",
+        "miniapp",
+        "tunnel"
+      ],
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 8,
+      "created_at": "2026-04-18 14:02:04"
+    },
+    {
+      "name": "cuddly-pi (HELM)",
+      "description": "Запуск интерфейса HELM, находящегося на удалённом сервере RasberryPi",
+      "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 7011:127.0.0.1:7010 cuddly-pi@82.65.33.206",
+      "run_mode": "shell",
+      "cwd": null,
+      "args": null,
+      "platform": "all",
+      "tags": null,
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 9,
+      "created_at": "2026-04-18 23:49:05"
+    },
+    {
+      "name": "cuddly-pi (LightRAG)",
+      "description": "Запуск интерфейса LightRAG, находящегося на удалённом сервере RasberryPi",
+      "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 9622:127.0.0.1:9621 cuddly-pi@82.65.33.206",
+      "run_mode": "shell",
+      "cwd": null,
+      "args": null,
+      "platform": "all",
+      "tags": null,
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 10,
+      "created_at": "2026-04-21 21:21:36"
+    },
+    {
+      "name": "cuddly-pi (SIGIL)",
+      "description": "Агентнская система Cuddly Records",
+      "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 4112:127.0.0.1:4111 cuddly-pi@82.65.33.206",
+      "run_mode": "shell",
+      "cwd": null,
+      "args": null,
+      "platform": "all",
+      "tags": null,
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 11,
+      "created_at": "2026-05-07 17:37:56"
+    },
+    {
+      "name": "cuddly-pi (LYRA)",
+      "description": null,
+      "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 5343:127.0.0.1:5342 cuddly-pi@82.65.33.206",
+      "run_mode": "shell",
+      "cwd": null,
+      "args": null,
+      "platform": "all",
+      "tags": null,
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 12,
+      "created_at": "2026-05-09 22:21:54"
+    },
+    {
+      "name": "cuddly-pi (THANE)",
+      "description": null,
+      "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 5175:127.0.0.1:5174 cuddly-pi@82.65.33.206",
+      "run_mode": "exec",
+      "cwd": null,
+      "args": null,
+      "platform": "all",
+      "tags": null,
+      "cron_schedule": null,
+      "cron_enabled": false,
+      "id": 13,
+      "created_at": "2026-05-09 22:28:27"
+    }
+  ]
+}

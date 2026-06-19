@@ -1,0 +1,9 @@
+{
+  "endpoint": "/ws/logs/service/1",
+  "sample_messages": [],
+  "payload_shape": {
+    "stream": "stdout|stderr",
+    "text": "<STRING>",
+    "ts": "<ISO>"
+  }
+}

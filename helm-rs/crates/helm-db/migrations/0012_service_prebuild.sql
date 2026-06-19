@@ -1,0 +1,1 @@
+ALTER TABLE services ADD COLUMN prebuild INTEGER DEFAULT 0;

@@ -1,0 +1,17 @@
+[Unit]
+Description=HELM Service Control Dashboard
+After=network.target
+
+[Service]
+Type=simple
+User=%i
+WorkingDirectory=/opt/helm
+ExecStart=/opt/helm/helm
+Restart=on-failure
+RestartSec=5
+EnvironmentFile=/opt/helm/.env
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+{
+  "method": "GET",
+  "path": "/api/faq",
+  "status": 404,
+  "response": {
+    "detail": "Not Found"
+  }
+}

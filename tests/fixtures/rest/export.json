@@ -1,0 +1,496 @@
+{
+  "method": "GET",
+  "path": "/api/export",
+  "status": 200,
+  "response": {
+    "version": 1,
+    "services": [
+      {
+        "name": "THANE FASTAPI",
+        "description": "Бухгалтерский сервис",
+        "type": "python",
+        "command": "py -m uvicorn app.main:app ",
+        "cwd": "J:/dagamon_programs/THANE/server",
+        "args": [
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "8000"
+        ],
+        "env": {
+          "NEW_VAR": ""
+        },
+        "url": "http://127.0.0.1:8000/docs",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "backend",
+          "api",
+          "fastapi"
+        ],
+        "venv_path": "J:/dagamon_programs/THANE/server/venv",
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "THANE FRONT",
+        "description": null,
+        "type": "node",
+        "command": "npm run dev",
+        "cwd": "J:\\dagamon_programs\\THANE\\client_react",
+        "args": null,
+        "env": null,
+        "url": "http://127.0.0.1:5173",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "frontend",
+          "react"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "LYRA FASTAPI",
+        "description": "Бэкенд сервиса для менеджмента Spotify плейлистов",
+        "type": "python",
+        "command": "py run.py",
+        "cwd": "J:\\dagamon_programs\\LYRA\\server",
+        "args": null,
+        "env": null,
+        "url": null,
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "backend",
+          "api",
+          "fastapi"
+        ],
+        "venv_path": "J:\\dagamon_programs\\LYRA\\server\\venv",
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "LYRA FRONT",
+        "description": "Фронтенд сервиса для менеджмента Spotify плейлистов",
+        "type": "node",
+        "command": "npm run dev",
+        "cwd": "J:\\dagamon_programs\\LYRA\\client",
+        "args": null,
+        "env": null,
+        "url": "http://localhost:5342/",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "frontend",
+          "react"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "Georythm ",
+        "description": "Инструмент для создание музыки на основе кружащихся геометрических фигур",
+        "type": "node",
+        "command": "npm run dev",
+        "cwd": "J:\\dagamon_programs\\georythm",
+        "args": null,
+        "env": null,
+        "url": "http://localhost:3000/",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "app",
+          "js"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "WebNoa.ai",
+        "description": "Веб-движок для создания визуальных новелл",
+        "type": "node",
+        "command": "bun run dev",
+        "cwd": "J:\\dagamon_programs\\WebNoa.io\\frontend",
+        "args": null,
+        "env": null,
+        "url": null,
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "app",
+          "nextjs"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "LightRAG Server",
+        "description": "Graph RAG memory backend for Codex/Claude via MCP bridge",
+        "type": "python",
+        "command": "J:/Programs/LightRAG/.venv/Scripts/python.exe",
+        "cwd": "J:/Programs/LightRAG",
+        "args": [
+          "-m",
+          "lightrag.api.lightrag_server",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "9621"
+        ],
+        "env": {
+          "PYTHONUTF8": "1",
+          "PYTHONIOENCODING": "utf-8"
+        },
+        "url": "http://127.0.0.1:9621",
+        "health_check_url": "http://127.0.0.1:9621/health",
+        "health_check_interval": 30,
+        "auto_start": 1,
+        "restart_on_crash": 1,
+        "platform": "windows",
+        "tags": [
+          "memory",
+          "rag",
+          "lightrag",
+          "mcp"
+        ],
+        "venv_path": "J:/Programs/LightRAG/.venv",
+        "depends_on": [],
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "converterchan API",
+        "description": "FastAPI backend for file converter",
+        "type": "python",
+        "command": "python",
+        "cwd": "J:/dagamon_programs/converterchan/backend",
+        "args": [
+          "run.py"
+        ],
+        "env": null,
+        "url": "http://localhost:8010",
+        "health_check_url": "http://localhost:8010/docs",
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "all",
+        "tags": [
+          "converterchan",
+          "backend"
+        ],
+        "venv_path": "J:/dagamon_programs/converterchan/backend/.venv",
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "converterchan UI",
+        "description": "React + Vite frontend for file converter",
+        "type": "node",
+        "command": "C:/Program Files/nodejs/npm.cmd",
+        "cwd": "J:/dagamon_programs/converterchan/frontend",
+        "args": [
+          "run",
+          "dev"
+        ],
+        "env": null,
+        "url": "http://localhost:5373",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "all",
+        "tags": [
+          "converterchan",
+          "frontend"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "SIGIL",
+        "description": "Кастомная агентная система на базе Mastra (TypeScript + Bun)",
+        "type": "node",
+        "command": "C:/Users/Dagamon/.bun/bin/bun.exe",
+        "cwd": "J:/dagamon_programs/SIGIL (Mastra)",
+        "args": [
+          "run",
+          "dev"
+        ],
+        "env": null,
+        "url": "http://localhost:4111",
+        "health_check_url": "http://localhost:4111",
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "mastra",
+          "agents",
+          "ai",
+          "sigil"
+        ],
+        "venv_path": null,
+        "depends_on": null,
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "Persona Dream WebUI",
+        "description": "Next.js 16 dashboard for persona_dream on :5874",
+        "type": "node",
+        "command": "C:/Users/Dagamon/.bun/bin/bun.exe",
+        "cwd": "J:/dagamon_programs/persona_dream/webui",
+        "args": [
+          "run",
+          "dev"
+        ],
+        "env": null,
+        "url": "http://localhost:5874",
+        "health_check_url": null,
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "persona-dream",
+          "frontend",
+          "nextjs",
+          "webui"
+        ],
+        "venv_path": null,
+        "depends_on": [],
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      },
+      {
+        "name": "Persona Dream Gateway",
+        "description": "Telegram AI persona Ryo - aiohttp gateway on port 18790",
+        "type": "python",
+        "command": "J:/dagamon_programs/persona_dream/.venv/Scripts/python.exe",
+        "cwd": "J:/dagamon_programs/persona_dream",
+        "args": [
+          "launcher.py",
+          "gateway"
+        ],
+        "env": null,
+        "url": "http://127.0.0.1:18790",
+        "health_check_url": "http://127.0.0.1:18790/health",
+        "health_check_interval": 30,
+        "auto_start": 0,
+        "restart_on_crash": 0,
+        "platform": "windows",
+        "tags": [
+          "persona-dream",
+          "ai",
+          "telegram",
+          "backend"
+        ],
+        "venv_path": "J:/dagamon_programs/persona_dream/.venv",
+        "depends_on": [],
+        "webhook_url": null,
+        "manifest_path": null,
+        "binary_path": null,
+        "cargo_profile": "release",
+        "cargo_features": null,
+        "prebuild": 0
+      }
+    ],
+    "scripts": [
+      {
+        "name": "Moscow Weather",
+        "description": "Fetches current weather in Moscow via open-meteo.com",
+        "command": "C:/Users/Dagamon/AppData/Local/Programs/Python/Python312/python.exe",
+        "cwd": null,
+        "args": [
+          "J:/dagamon_programs/scripts/moscow_weather.py"
+        ],
+        "platform": "all",
+        "tags": [
+          "weather",
+          "utility"
+        ],
+        "cron_schedule": "*/30 * * * *",
+        "cron_enabled": 0,
+        "run_mode": "exec"
+      },
+      {
+        "name": "CuddlyPi OpenClaw Tunnel",
+        "description": "SSH-??????? ? OpenClaw (???? 18789), ?????????????? ??? ??????",
+        "command": "C:/Users/Dagamon/AppData/Local/Programs/Python/Python312/python.exe",
+        "cwd": null,
+        "args": [
+          "J:/dagamon_programs/HELM/scripts/cuddlypi_openclaw.py"
+        ],
+        "platform": "windows",
+        "tags": [
+          "ssh",
+          "tunnel",
+          "openclaw",
+          "cuddly-pi"
+        ],
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "exec"
+      },
+      {
+        "name": "localhost 5173 tunnel",
+        "description": "Open public localtunnel URL for BARD Mini App",
+        "command": "npx",
+        "cwd": "J:/dagamon_programs/BARD",
+        "args": [
+          "--yes",
+          "localtunnel@2.0.2",
+          "--port",
+          "5173",
+          "--local-host",
+          "localhost"
+        ],
+        "platform": "windows",
+        "tags": [
+          "bard",
+          "miniapp",
+          "tunnel"
+        ],
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "exec"
+      },
+      {
+        "name": "cuddly-pi (HELM)",
+        "description": "Запуск интерфейса HELM, находящегося на удалённом сервере RasberryPi",
+        "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 7011:127.0.0.1:7010 cuddly-pi@82.65.33.206",
+        "cwd": null,
+        "args": null,
+        "platform": "all",
+        "tags": null,
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "shell"
+      },
+      {
+        "name": "cuddly-pi (LightRAG)",
+        "description": "Запуск интерфейса LightRAG, находящегося на удалённом сервере RasberryPi",
+        "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 9622:127.0.0.1:9621 cuddly-pi@82.65.33.206",
+        "cwd": null,
+        "args": null,
+        "platform": "all",
+        "tags": null,
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "shell"
+      },
+      {
+        "name": "cuddly-pi (SIGIL)",
+        "description": "Агентнская система Cuddly Records",
+        "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 4112:127.0.0.1:4111 cuddly-pi@82.65.33.206",
+        "cwd": null,
+        "args": null,
+        "platform": "all",
+        "tags": null,
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "shell"
+      },
+      {
+        "name": "cuddly-pi (LYRA)",
+        "description": null,
+        "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 5343:127.0.0.1:5342 cuddly-pi@82.65.33.206",
+        "cwd": null,
+        "args": null,
+        "platform": "all",
+        "tags": null,
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "shell"
+      },
+      {
+        "name": "cuddly-pi (THANE)",
+        "description": null,
+        "command": "C:\\Windows\\System32\\OpenSSH\\ssh.exe -N -F NUL -o BatchMode=yes -o IdentitiesOnly=yes -o IdentityFile=C:/ProgramData/HELM/keys/cuddly_records/cuddly_records -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=C:/ProgramData/HELM/keys/known_hosts -o ExitOnForwardFailure=yes -L 5175:127.0.0.1:5174 cuddly-pi@82.65.33.206",
+        "cwd": null,
+        "args": null,
+        "platform": "all",
+        "tags": null,
+        "cron_schedule": null,
+        "cron_enabled": 0,
+        "run_mode": "exec"
+      }
+    ]
+  }
+}
