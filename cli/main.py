@@ -10,10 +10,12 @@ from rich.text import Text
 from .client import HelmClient, HelmError
 from .config import HELM_PIN, HELM_URL
 from .scripts import script_app
+from .stacks import stack_app
 from .stream import follow_logs
 
 app = typer.Typer(name="helmctl", help="HELM service control CLI", no_args_is_help=True)
 app.add_typer(script_app, name="script")
+app.add_typer(stack_app, name="stack")
 
 out = Console()
 err = Console(stderr=True)

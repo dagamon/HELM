@@ -1,0 +1,27 @@
+{
+  "name": "helm-dark",
+  "label": "Helm Dark",
+  "hint": "Default console blue",
+  "colors": {
+    "accent": "#3b82f6",
+    "accent-hover": "#2563eb",
+    "bg": "#09090b",
+    "surface": "#111114",
+    "surface-hover": "#19191e",
+    "surface-raised": "#222228",
+    "border": "#1e1e24",
+    "text": "#ececef",
+    "text-muted": "#8b8b93",
+    "success": "#34d399",
+    "warning": "#fbbf24",
+    "danger": "#f87171"
+  },
+  "panels": {
+    "steel": "#141c2a",
+    "ocean": "#0f2027",
+    "forest": "#11211a",
+    "amber": "#231d12",
+    "plum": "#1d1730",
+    "rose": "#27141b"
+  }
+}

@@ -98,6 +98,9 @@ async fn main() -> Result<()> {
     );
     metrics.clone().spawn();
 
+    let host = helm_proc::HostMonitor::new(std::time::Duration::from_secs(2));
+    host.clone().spawn();
+
     let retention = helm_proc::LogRetention::new(
         db.clone(),
         helm_proc::RetentionConfig {
@@ -128,7 +131,7 @@ async fn main() -> Result<()> {
     }
 
     let (restart_tx, mut restart_rx) = tokio::sync::watch::channel(false);
-    let mut state = helm_api::make_state(db, pm, log_buffer, status, metrics, scheduler);
+    let mut state = helm_api::make_state(db, pm, log_buffer, status, metrics, host, scheduler);
     state.dashboard_pin = settings.dashboard_pin.clone();
     state.restart_tx = Some(restart_tx);
 

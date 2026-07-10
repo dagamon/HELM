@@ -1,0 +1,27 @@
+{
+  "name": "daylight",
+  "label": "Daylight",
+  "hint": "Bright deck, dark ink",
+  "colors": {
+    "accent": "#2563eb",
+    "accent-hover": "#1d4ed8",
+    "bg": "#f6f7f9",
+    "surface": "#ffffff",
+    "surface-hover": "#eef1f5",
+    "surface-raised": "#e7ebf1",
+    "border": "#dde2ea",
+    "text": "#1a1d23",
+    "text-muted": "#5b6472",
+    "success": "#059669",
+    "warning": "#d97706",
+    "danger": "#dc2626"
+  },
+  "panels": {
+    "steel": "#e9eef7",
+    "ocean": "#e1f1f5",
+    "forest": "#e4f2e8",
+    "amber": "#f9f0dc",
+    "plum": "#efe9f8",
+    "rose": "#fae8ed"
+  }
+}

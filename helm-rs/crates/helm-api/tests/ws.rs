@@ -33,6 +33,7 @@ async fn start_server() -> TestServer {
     let status = StatusBroadcaster::new(256);
     let pm = ProcessManager::new(db.clone(), log_buffer.clone(), status.clone());
     let metrics = MetricsCollector::new(pm.clone(), status.clone(), Duration::from_secs(5));
+    let host = helm_proc::HostMonitor::new(Duration::from_secs(2));
     let scheduler = Scheduler::new(pm.clone()).await.unwrap();
 
     let state = make_state(
@@ -41,6 +42,7 @@ async fn start_server() -> TestServer {
         log_buffer.clone(),
         status.clone(),
         metrics,
+        host,
         scheduler,
     );
     let router = build_router(state);

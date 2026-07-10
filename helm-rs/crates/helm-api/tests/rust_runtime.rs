@@ -23,9 +23,10 @@ async fn start_server() -> (std::net::SocketAddr, Db, tokio::sync::oneshot::Send
     let status = StatusBroadcaster::new(64);
     let pm = ProcessManager::new(db.clone(), log_buffer.clone(), status.clone());
     let metrics = MetricsCollector::new(pm.clone(), status.clone(), Duration::from_secs(5));
+    let host = helm_proc::HostMonitor::new(Duration::from_secs(2));
     let scheduler = Scheduler::new(pm.clone()).await.unwrap();
 
-    let state = make_state(db.clone(), pm, log_buffer, status, metrics, scheduler);
+    let state = make_state(db.clone(), pm, log_buffer, status, metrics, host, scheduler);
     let router = build_router(state);
 
     let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -83,6 +84,8 @@ fn make_rust_service_create(
         cargo_profile: Some("release".into()),
         cargo_features: None,
         prebuild,
+        stack_id: None,
+        card_color: None,
     }
 }
 

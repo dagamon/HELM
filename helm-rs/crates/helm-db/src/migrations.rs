@@ -11,6 +11,8 @@ use sqlx::SqlitePool;
 use tracing::info;
 
 const INIT_SQL: &str = include_str!("../migrations/0001_init.sql");
+const SETTINGS_SQL: &str = include_str!("../migrations/0013_settings.sql");
+const STACKS_SQL: &str = include_str!("../migrations/0015_stacks.sql");
 
 const COLUMN_MIGRATIONS: &[(&str, &str, &str)] = &[
     (
@@ -68,10 +70,34 @@ const COLUMN_MIGRATIONS: &[(&str, &str, &str)] = &[
         "prebuild",
         include_str!("../migrations/0012_service_prebuild.sql"),
     ),
+    (
+        "services",
+        "sort_order",
+        include_str!("../migrations/0014_service_sort_order.sql"),
+    ),
+    (
+        "services",
+        "stack_id",
+        include_str!("../migrations/0016_service_stack_id.sql"),
+    ),
+    (
+        "services",
+        "card_color",
+        include_str!("../migrations/0017_service_card_color.sql"),
+    ),
+    (
+        "stacks",
+        "card_color",
+        include_str!("../migrations/0018_stack_card_color.sql"),
+    ),
 ];
 
 pub async fn run(pool: &SqlitePool) -> Result<()> {
     apply_script(pool, INIT_SQL).await.context("0001_init")?;
+
+    // New-table migrations: idempotent via CREATE TABLE IF NOT EXISTS.
+    apply_script(pool, SETTINGS_SQL).await.context("0013_settings")?;
+    apply_script(pool, STACKS_SQL).await.context("0015_stacks")?;
 
     for (table, column, sql) in COLUMN_MIGRATIONS {
         if !column_exists(pool, table, column).await? {

@@ -13,6 +13,7 @@ use serde::Deserialize;
 pub fn router() -> Router<AppState> {
     Router::new()
         .route("/api/services", get(list).post(create))
+        .route("/api/services/reorder", axum::routing::post(reorder))
         .route("/api/services/:id", get(get_one).put(update).delete(delete))
         .route("/api/services/:id/start", axum::routing::post(start))
         .route("/api/services/:id/stop", axum::routing::post(stop))
@@ -38,6 +39,22 @@ async fn list(State(state): State<AppState>) -> Result<Json<Vec<ServiceResponse>
         out.push(row.into_response(status, pid)?);
     }
     Ok(Json(out))
+}
+
+#[derive(Debug, Deserialize)]
+struct ReorderBody {
+    ids: Vec<i64>,
+}
+
+async fn reorder(
+    State(state): State<AppState>,
+    Json(body): Json<ReorderBody>,
+) -> Result<axum::http::StatusCode, ApiError> {
+    if body.ids.is_empty() {
+        return Err(ApiError::BadRequest("ids must not be empty".into()));
+    }
+    services::reorder(&state.db.pool, &body.ids).await?;
+    Ok(axum::http::StatusCode::NO_CONTENT)
 }
 
 async fn get_one(
@@ -132,7 +149,7 @@ async fn run_prebuild(argv: Vec<String>, cwd: Option<&str>) -> Result<(), ApiErr
     Ok(())
 }
 
-async fn build_spawn_spec(
+pub(crate) async fn build_spawn_spec(
     row: &helm_db::repo::services::ServiceRow,
 ) -> Result<SpawnSpec, ApiError> {
     use helm_db::repo::de_json;
@@ -230,7 +247,7 @@ async fn restart(
     }
 }
 
-fn map_spawn_error(e: anyhow::Error) -> ApiError {
+pub(crate) fn map_spawn_error(e: anyhow::Error) -> ApiError {
     let msg = e.to_string();
     if msg.contains("already running") || msg.contains("Dependency") {
         ApiError::Conflict(msg)

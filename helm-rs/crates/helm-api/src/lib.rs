@@ -10,7 +10,9 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use helm_proc::{LogBuffer, MetricsCollector, ProcessManager, Scheduler, StatusBroadcaster};
+use helm_proc::{
+    HostMonitor, LogBuffer, MetricsCollector, ProcessManager, Scheduler, StatusBroadcaster,
+};
 use serde_json::json;
 use state::AppState;
 use std::sync::Arc;
@@ -32,8 +34,13 @@ pub fn build_router(state: AppState) -> Router {
         .route("/api/export", get(routers::system::export))
         .route("/api/restart-server", post(routers::system::restart_server))
         .merge(routers::services::router())
+        .merge(routers::stacks::router())
         .merge(routers::scripts::router())
         .merge(routers::faq::router())
+        .merge(routers::diagnostics::router())
+        .merge(routers::update::router())
+        .merge(routers::settings::router())
+        .merge(routers::themes::router())
         .merge(routers::ws::router())
         .fallback(fallback_404)
         .layer(axum_middleware::from_fn_with_state(
@@ -51,6 +58,7 @@ pub fn make_state(
     log_buffer: Arc<LogBuffer>,
     status: Arc<StatusBroadcaster>,
     metrics: Arc<MetricsCollector>,
+    host: Arc<HostMonitor>,
     scheduler: Arc<Scheduler>,
 ) -> AppState {
     AppState {
@@ -60,6 +68,7 @@ pub fn make_state(
         log_buffer,
         status,
         metrics,
+        host,
         scheduler,
         dashboard_pin: String::new(),
         restart_tx: None,

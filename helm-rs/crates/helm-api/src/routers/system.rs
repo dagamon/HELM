@@ -12,9 +12,13 @@ use sqlx::{Column, Row};
 
 const PIN_COOKIE_NAME: &str = "helm_pin";
 
+/// HELM release version, single-sourced from the workspace `Cargo.toml`.
+pub const HELM_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[derive(Serialize)]
 pub struct SystemInfo {
     pub os: String,
+    pub version: &'static str,
     pub runtime_version: String,
     pub platform: String,
     pub uptime_seconds: u64,
@@ -51,6 +55,7 @@ pub async fn info(State(state): State<AppState>) -> Result<Json<SystemInfo>, Api
     let service_count = state.db.service_count().await.unwrap_or(0);
     Ok(Json(SystemInfo {
         os: os_capitalised(),
+        version: HELM_VERSION,
         runtime_version: format!("rustc {}", option_env!("RUSTC_VERSION").unwrap_or("stable")),
         platform: detect_platform(),
         uptime_seconds: state.started_at.elapsed().as_secs(),
@@ -74,11 +79,13 @@ pub async fn export(State(state): State<AppState>) -> Result<Json<ExportPayload>
         &["args", "tags"],
     )
     .await?;
+    let stacks = strip_rows_as_json(&state.db, "SELECT * FROM stacks ORDER BY id", &["tags"]).await?;
 
     Ok(Json(ExportPayload {
         version: 1,
         services,
         scripts,
+        stacks,
     }))
 }
 

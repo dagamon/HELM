@@ -152,6 +152,8 @@ async fn health_monitor_broadcasts_healthy_and_unhealthy() {
         cargo_profile: None,
         cargo_features: None,
         prebuild: false,
+        stack_id: None,
+        card_color: None,
     };
     let svc_bad = ServiceCreate {
         name: "bad".into(),
@@ -176,6 +178,8 @@ async fn health_monitor_broadcasts_healthy_and_unhealthy() {
         cargo_profile: None,
         cargo_features: None,
         prebuild: false,
+        stack_id: None,
+        card_color: None,
     };
     let id_ok = repo::services::create(&db.pool, &svc_ok).await.unwrap();
     let id_bad = repo::services::create(&db.pool, &svc_bad).await.unwrap();

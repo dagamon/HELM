@@ -1,5 +1,7 @@
 # HELM
 
+**Version 0.2.0** · MIT License
+
 Service control dashboard for running local tools, bots, dev servers, and maintenance scripts from one self-hosted web UI.
 
 HELM runs at `http://127.0.0.1:7010` by default and is designed to live as a background service under NSSM on Windows or systemd on Linux. The backend is Rust; the frontend is React/Vite; the database is SQLite.
@@ -297,3 +299,7 @@ Linux systemd: ./helm
 ```
 
 SQLite data remains in `data/dashboard.db`; Rust migrations run automatically at startup.
+
+## License
+
+Released under the [MIT License](LICENSE).

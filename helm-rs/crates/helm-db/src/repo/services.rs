@@ -28,6 +28,9 @@ pub struct ServiceRow {
     pub cargo_profile: Option<String>,
     pub cargo_features: Option<String>,
     pub prebuild: i64,
+    pub sort_order: i64,
+    pub stack_id: Option<i64>,
+    pub card_color: Option<String>,
     pub created_at: String,
     pub updated_at: String,
 }
@@ -58,6 +61,9 @@ impl ServiceRow {
             cargo_profile: self.cargo_profile,
             cargo_features: self.cargo_features,
             prebuild: self.prebuild != 0,
+            sort_order: self.sort_order,
+            stack_id: self.stack_id,
+            card_color: self.card_color,
             created_at: self.created_at,
             updated_at: self.updated_at,
             status,
@@ -67,10 +73,25 @@ impl ServiceRow {
 }
 
 pub async fn list(pool: &SqlitePool) -> Result<Vec<ServiceRow>> {
-    let rows = sqlx::query_as::<_, ServiceRow>("SELECT * FROM services ORDER BY id")
-        .fetch_all(pool)
-        .await?;
+    let rows =
+        sqlx::query_as::<_, ServiceRow>("SELECT * FROM services ORDER BY sort_order, id")
+            .fetch_all(pool)
+            .await?;
     Ok(rows)
+}
+
+/// Persist explicit display order: each id gets sort_order = its index.
+pub async fn reorder(pool: &SqlitePool, ids: &[i64]) -> Result<()> {
+    let mut tx = pool.begin().await?;
+    for (idx, id) in ids.iter().enumerate() {
+        sqlx::query("UPDATE services SET sort_order = ? WHERE id = ?")
+            .bind(idx as i64)
+            .bind(id)
+            .execute(&mut *tx)
+            .await?;
+    }
+    tx.commit().await?;
+    Ok(())
 }
 
 pub async fn get(pool: &SqlitePool, id: i64) -> Result<Option<ServiceRow>> {
@@ -92,8 +113,10 @@ pub async fn create(pool: &SqlitePool, body: &ServiceCreate) -> Result<i64> {
            (name, description, type, command, cwd, venv_path, args, env, url,
             health_check_url, health_check_interval, auto_start, restart_on_crash,
             platform, tags, depends_on, webhook_url,
-            manifest_path, binary_path, cargo_profile, cargo_features, prebuild)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            manifest_path, binary_path, cargo_profile, cargo_features, prebuild, stack_id,
+            card_color, sort_order)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                   (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM services))
            RETURNING id"#,
     )
     .bind(&body.name)
@@ -118,6 +141,8 @@ pub async fn create(pool: &SqlitePool, body: &ServiceCreate) -> Result<i64> {
     .bind(&body.cargo_profile)
     .bind(&body.cargo_features)
     .bind(body.prebuild as i64)
+    .bind(body.stack_id)
+    .bind(&body.card_color)
     .fetch_one(pool)
     .await?;
     Ok(row.get::<i64, _>(0))
@@ -201,6 +226,16 @@ pub async fn update(pool: &SqlitePool, id: i64, body: &ServiceUpdate) -> Result<
     push_str_opt!("cargo_profile", &body.cargo_profile);
     push_str_opt!("cargo_features", &body.cargo_features);
     push_bool!("prebuild", body.prebuild);
+    push_str_opt!("card_color", &body.card_color);
+    // stack_id: 0 means "detach from stack" (bind NULL via the str lane).
+    if let Some(sid) = body.stack_id {
+        setters.push("stack_id = ?");
+        if sid == 0 {
+            binds_str.push(None);
+        } else {
+            binds_i64.push((setters.len() - 1, sid));
+        }
+    }
 
     if setters.is_empty() {
         return Ok(true);

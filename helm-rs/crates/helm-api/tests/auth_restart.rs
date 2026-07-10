@@ -33,12 +33,13 @@ async fn start_server(pin: &str, restartable: bool) -> TestServer {
     let status = StatusBroadcaster::new(64);
     let pm = ProcessManager::new(db.clone(), log_buffer.clone(), status.clone());
     let metrics = MetricsCollector::new(pm.clone(), status.clone(), Duration::from_secs(5));
+    let host = helm_proc::HostMonitor::new(Duration::from_secs(2));
     let scheduler = Scheduler::new(pm.clone()).await.unwrap();
 
     let (manual_tx, manual_rx) = tokio::sync::oneshot::channel::<()>();
     let (restart_tx, mut restart_rx) = tokio::sync::watch::channel(false);
 
-    let mut state = make_state(db, pm, log_buffer, status, metrics, scheduler);
+    let mut state = make_state(db, pm, log_buffer, status, metrics, host, scheduler);
     state.dashboard_pin = pin.to_string();
     if restartable {
         state.restart_tx = Some(restart_tx);

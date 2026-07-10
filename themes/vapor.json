@@ -1,0 +1,27 @@
+{
+  "name": "vapor",
+  "label": "Vapor",
+  "hint": "Violet instrument glow",
+  "colors": {
+    "accent": "#a78bfa",
+    "accent-hover": "#8b5cf6",
+    "bg": "#0b0a10",
+    "surface": "#131119",
+    "surface-hover": "#1b1824",
+    "surface-raised": "#262234",
+    "border": "#221d2e",
+    "text": "#ece9f4",
+    "text-muted": "#908aa0",
+    "success": "#34d399",
+    "warning": "#fbbf24",
+    "danger": "#f472b6"
+  },
+  "panels": {
+    "steel": "#161e2e",
+    "ocean": "#102430",
+    "forest": "#13251e",
+    "amber": "#262011",
+    "plum": "#221933",
+    "rose": "#2a1622"
+  }
+}

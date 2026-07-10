@@ -15,6 +15,8 @@ interface ServicesState {
   stop: (id: number) => Promise<void>;
   restart: (id: number) => Promise<void>;
   patchLocal: (id: number, patch: Partial<Service>) => void;
+  moveService: (dragId: number, overId: number) => void;
+  persistOrder: () => Promise<void>;
 }
 
 export const useServices = create<ServicesState>((set, get) => ({
@@ -67,5 +69,27 @@ export const useServices = create<ServicesState>((set, get) => ({
     set((s) => ({
       services: s.services.map((x) => (x.id === id ? { ...x, ...patch } : x)),
     }));
+  },
+
+  moveService: (dragId, overId) => {
+    set((s) => {
+      const from = s.services.findIndex((x) => x.id === dragId);
+      const to = s.services.findIndex((x) => x.id === overId);
+      if (from === -1 || to === -1 || from === to) return s;
+      const next = [...s.services];
+      const [moved] = next.splice(from, 1);
+      next.splice(to, 0, moved);
+      return { services: next };
+    });
+  },
+
+  persistOrder: async () => {
+    const ids = get().services.map((s) => s.id);
+    try {
+      await api.reorderServices(ids);
+    } catch (e) {
+      set({ error: String(e) });
+      await get().fetch();
+    }
   },
 }));

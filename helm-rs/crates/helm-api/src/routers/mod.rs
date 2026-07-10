@@ -1,5 +1,10 @@
+pub mod diagnostics;
 pub mod faq;
 pub mod scripts;
 pub mod services;
+pub mod settings;
+pub mod stacks;
 pub mod system;
+pub mod themes;
+pub mod update;
 pub mod ws;

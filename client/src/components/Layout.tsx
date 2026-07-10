@@ -1,20 +1,30 @@
 import { useEffect, useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
-import { LayoutDashboard, ScrollText, Menu, X, Settings, HelpCircle, Anchor, Bot } from "lucide-react";
+import { LayoutDashboard, ScrollText, Menu, X, Settings, HelpCircle, Anchor, Activity } from "lucide-react";
+import { api } from "@/api/client";
+import { UpdateNotice } from "./UpdateNotice";
 
 const NAV_MAIN = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
   { to: "/scripts", icon: ScrollText, label: "Scripts" },
-  { to: "/agents", icon: Bot, label: "Agents" },
+  { to: "/diagnostics", icon: Activity, label: "Diagnostics" },
 ] as const;
 
 const NAV_BOTTOM = [
   { to: "/faq", icon: HelpCircle, label: "FAQ" },
-  { to: "/settings", icon: Settings, label: "Настройки" },
+  { to: "/settings", icon: Settings, label: "Settings" },
 ] as const;
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [version, setVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    api
+      .systemInfo()
+      .then((info) => setVersion(info.version))
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -38,6 +48,11 @@ export function Layout() {
           <div className="flex items-center gap-2">
             <Anchor className="w-4 h-4 text-accent" />
             <span className="font-semibold text-sm tracking-tight">HELM</span>
+            {version && (
+              <span className="text-[10px] font-mono text-text-tertiary mt-0.5">
+                v{version}
+              </span>
+            )}
           </div>
           <button
             onClick={() => setSidebarOpen(false)}
@@ -91,11 +106,11 @@ export function Layout() {
 
       {/* Main content */}
       <main className="flex-1 overflow-auto px-10 py-6">
-        {/* Hamburger — always rendered to preserve layout */}
-        <div className="mb-5">
+        {/* Hamburger — sticky so it stays visible while content scrolls */}
+        <div className="sticky top-0 z-20 mb-5 w-fit">
           <button
             onClick={() => setSidebarOpen(true)}
-            className={`p-1.5 rounded-md hover:bg-surface-hover text-text-muted transition-all duration-200 ${
+            className={`p-1.5 rounded-md bg-surface/80 backdrop-blur-sm border border-border hover:bg-surface-hover text-text-muted transition-all duration-200 ${
               sidebarOpen ? "opacity-0 pointer-events-none" : "opacity-100"
             }`}
           >
@@ -104,6 +119,8 @@ export function Layout() {
         </div>
         <Outlet />
       </main>
+
+      <UpdateNotice />
     </div>
   );
 }

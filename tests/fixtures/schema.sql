@@ -16,7 +16,15 @@ CREATE TABLE services (
     tags                  TEXT,
     created_at            TEXT DEFAULT (datetime('now')),
     updated_at            TEXT DEFAULT (datetime('now'))
-, venv_path TEXT, depends_on TEXT, webhook_url TEXT, manifest_path TEXT, binary_path TEXT, cargo_profile TEXT DEFAULT 'release', cargo_features TEXT, prebuild INTEGER DEFAULT 0);
+, venv_path TEXT, depends_on TEXT, webhook_url TEXT, manifest_path TEXT, binary_path TEXT, cargo_profile TEXT DEFAULT 'release', cargo_features TEXT, prebuild INTEGER DEFAULT 0, sort_order INTEGER DEFAULT 0, stack_id INTEGER, card_color TEXT);
+CREATE TABLE stacks (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    name        TEXT NOT NULL,
+    description TEXT,
+    tags        TEXT,
+    created_at  TEXT DEFAULT (datetime('now')),
+    updated_at  TEXT DEFAULT (datetime('now'))
+, card_color TEXT);
 CREATE TABLE sqlite_sequence(name,seq);
 CREATE TABLE scripts (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -49,3 +57,8 @@ CREATE TABLE output_logs (
 );
 CREATE INDEX idx_output_logs
     ON output_logs(entity_type, entity_id, ts DESC);
+CREATE TABLE settings (
+    key TEXT PRIMARY KEY,
+    value TEXT NOT NULL,
+    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

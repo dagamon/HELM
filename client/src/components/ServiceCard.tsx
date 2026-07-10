@@ -1,9 +1,28 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Play, Square, RotateCw, Trash2, Terminal, ExternalLink } from "lucide-react";
+import {
+  Play,
+  Square,
+  RotateCw,
+  Trash2,
+  Terminal,
+  ExternalLink,
+  GripVertical,
+} from "lucide-react";
 import type { Service } from "@/api/types";
 import { useServices } from "@/store/services";
+import { useThemeStore } from "@/store/theme";
 import { Sparkline } from "./Sparkline";
+import { PanelColorPicker } from "./PanelColorPicker";
+
+export interface ServiceCardDrag {
+  onDragStart: () => void;
+  onDragEnter: () => void;
+  onDrop: () => void;
+  onDragEnd: () => void;
+  dragging: boolean;
+  dropTarget: boolean;
+}
 
 const MAX_HISTORY = 30;
 
@@ -14,10 +33,18 @@ const STATUS_DOT: Record<string, string> = {
   error: "bg-danger",
 };
 
-export function ServiceCard({ service }: { service: Service }) {
-  const { start, stop, restart, remove } = useServices();
+export function ServiceCard({
+  service,
+  drag,
+}: {
+  service: Service;
+  drag?: ServiceCardDrag;
+}) {
+  const { start, stop, restart, remove, update } = useServices();
   const navigate = useNavigate();
   const isRunning = service.status === "running";
+  const panels = useThemeStore((s) => s.panels);
+  const panelHex = service.card_color ? panels[service.card_color] : undefined;
 
   const [cpuHistory, setCpuHistory] = useState<number[]>([]);
   const [memHistory, setMemHistory] = useState<number[]>([]);
@@ -55,10 +82,42 @@ export function ServiceCard({ service }: { service: Service }) {
   return (
     <div
       onClick={() => navigate(`/services/${service.id}`)}
-      className="group bg-surface border border-border rounded-xl p-4 hover:bg-surface-hover hover:border-border-hover transition-colors cursor-pointer"
+      draggable={drag ? true : undefined}
+      onDragStart={
+        drag
+          ? (e) => {
+              e.dataTransfer.effectAllowed = "move";
+              e.dataTransfer.setData("text/plain", String(service.id));
+              drag.onDragStart();
+            }
+          : undefined
+      }
+      onDragEnter={drag ? drag.onDragEnter : undefined}
+      onDragOver={drag ? (e) => e.preventDefault() : undefined}
+      onDrop={
+        drag
+          ? (e) => {
+              e.preventDefault();
+              drag.onDrop();
+            }
+          : undefined
+      }
+      onDragEnd={drag ? drag.onDragEnd : undefined}
+      style={panelHex ? { background: panelHex } : undefined}
+      className={`group bg-surface border rounded-xl p-4 hover:bg-surface-hover hover:border-border-hover transition-all cursor-pointer ${
+        drag?.dropTarget
+          ? "border-accent ring-1 ring-accent"
+          : "border-border"
+      } ${drag?.dragging ? "opacity-40" : ""}`}
     >
       {/* Row 1: Status dot + Name */}
       <div className="flex items-center gap-2.5 mb-1">
+        {drag && (
+          <GripVertical
+            className="w-3.5 h-3.5 -ml-1 shrink-0 text-text-tertiary opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing"
+            onClick={(e) => e.stopPropagation()}
+          />
+        )}
         <span
           className={`w-2 h-2 rounded-full shrink-0 ${STATUS_DOT[service.status] ?? STATUS_DOT.stopped}`}
         />
@@ -165,6 +224,10 @@ export function ServiceCard({ service }: { service: Service }) {
             }}
           />
         )}
+        <PanelColorPicker
+          value={service.card_color}
+          onChange={(key) => update(service.id, { card_color: key })}
+        />
         <div className="flex-1" />
         <ActionBtn
           icon={Trash2}

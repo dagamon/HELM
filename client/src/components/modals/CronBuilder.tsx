@@ -45,12 +45,53 @@ function detectPreset(expr: string): string {
   return found ? found.value : "custom";
 }
 
+const DOW_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const MONTH_NAMES = [
+  "", "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+// Best-effort English rendering for the common cron shapes users actually type.
+// Falls back to a neutral label rather than guessing wrong on exotic fields.
 function describeCron(expr: string): string {
   const found = PRESETS.find((p) => p.value === expr);
   if (found && found.value !== "custom") return found.label;
-  const parts = expr.trim().split(/\s+/);
-  if (parts.length !== 5) return "";
-  return "Custom schedule";
+
+  const [min, hour, day, month, dow] = expr.trim().split(/\s+/);
+  if ([min, hour, day, month, dow].some((p) => p === undefined)) return "";
+
+  const num = (s: string) => /^\d+$/.test(s);
+  const step = (s: string) => /^\*\/\d+$/.test(s);
+  const stepVal = (s: string) => s.slice(2);
+
+  const parts: string[] = [];
+
+  // Time of day
+  if (num(min) && num(hour)) {
+    parts.push(`at ${hour.padStart(2, "0")}:${min.padStart(2, "0")}`);
+  } else if (step(min) && hour === "*") {
+    parts.push(`every ${stepVal(min)} min`);
+  } else if (min === "0" && step(hour)) {
+    parts.push(`every ${stepVal(hour)} hours`);
+  } else if (min === "*" && hour === "*") {
+    parts.push("every minute");
+  } else if (num(min) && hour === "*") {
+    parts.push(`at :${min.padStart(2, "0")} every hour`);
+  }
+
+  // Day of week
+  if (dow !== "*") {
+    if (dow === "1-5") parts.push("on weekdays");
+    else if (dow === "0,6" || dow === "6,0") parts.push("on weekends");
+    else if (num(dow)) parts.push(`on ${DOW_NAMES[Number(dow) % 8] ?? dow}`);
+    else parts.push(`on weekday ${dow}`);
+  }
+
+  // Day of month / month
+  if (day !== "*" && num(day)) parts.push(`on day ${day}`);
+  if (month !== "*" && num(month)) parts.push(`in ${MONTH_NAMES[Number(month)] ?? month}`);
+
+  return parts.length ? parts.join(" ") : "Custom schedule";
 }
 
 // Shared select class

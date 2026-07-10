@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "user": [
+      {
+        "title": "Start",
+        "items": ["01-getting-started"]
+      },
+      {
+        "title": "Daily Use",
+        "items": ["02-services", "03-scripts", "04-logs-and-status", "05-scheduling"]
+      },
+      {
+        "title": "Workspace",
+        "items": ["06-settings-and-theme", "07-backup-and-restore"]
+      },
+      {
+        "title": "Help",
+        "items": ["08-troubleshooting"]
+      }
+    ]
+  }
+}

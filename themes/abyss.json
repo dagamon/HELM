@@ -1,0 +1,27 @@
+{
+  "name": "abyss",
+  "label": "Abyss",
+  "hint": "Deep-water cyan",
+  "colors": {
+    "accent": "#22d3ee",
+    "accent-hover": "#06b6d4",
+    "bg": "#071a1f",
+    "surface": "#0c2329",
+    "surface-hover": "#123038",
+    "surface-raised": "#18414b",
+    "border": "#143840",
+    "text": "#e6f4f1",
+    "text-muted": "#7fa8a8",
+    "success": "#2dd4bf",
+    "warning": "#fbbf24",
+    "danger": "#fb7185"
+  },
+  "panels": {
+    "steel": "#0f2a3c",
+    "ocean": "#0b2f36",
+    "forest": "#0d2e24",
+    "amber": "#282413",
+    "plum": "#1c2140",
+    "rose": "#2d1a28"
+  }
+}

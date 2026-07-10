@@ -56,6 +56,11 @@ pub struct ServiceCreate {
     pub cargo_features: Option<String>,
     #[serde(default)]
     pub prebuild: bool,
+    #[serde(default)]
+    pub stack_id: Option<i64>,
+    /// Panel color key from the active theme's `panels` palette ("" = default).
+    #[serde(default)]
+    pub card_color: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -104,6 +109,12 @@ pub struct ServiceUpdate {
     pub cargo_features: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub prebuild: Option<bool>,
+    /// Some(0) detaches the service from its stack (0 is never a valid id).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub stack_id: Option<i64>,
+    /// Panel color key from the active theme's `panels` palette ("" = default).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_color: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -131,10 +142,57 @@ pub struct ServiceResponse {
     pub cargo_profile: Option<String>,
     pub cargo_features: Option<String>,
     pub prebuild: bool,
+    pub sort_order: i64,
+    pub stack_id: Option<i64>,
+    pub card_color: Option<String>,
     pub created_at: String,
     pub updated_at: String,
     pub status: String,
     pub pid: Option<i64>,
+}
+
+// ---------------------------------------------------------------------------
+// Stack — a named group of services started/stopped as one unit
+// ---------------------------------------------------------------------------
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StackCreate {
+    pub name: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub tags: Option<Vec<String>>,
+    /// Panel color key from the active theme's `panels` palette ("" = default).
+    #[serde(default)]
+    pub card_color: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StackUpdate {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub description: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub tags: Option<Vec<String>>,
+    /// Panel color key from the active theme's `panels` palette ("" = default).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub card_color: Option<String>,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct StackResponse {
+    pub id: i64,
+    pub name: String,
+    pub description: Option<String>,
+    pub tags: Option<Vec<String>>,
+    pub card_color: Option<String>,
+    pub created_at: String,
+    pub updated_at: String,
+    pub service_count: i64,
+    pub running_count: i64,
+    /// "running" (all up), "partial" (some up), "stopped" (none up)
+    pub status: String,
 }
 
 // ---------------------------------------------------------------------------
@@ -256,4 +314,6 @@ pub struct ExportPayload {
     pub version: i64,
     pub services: Vec<serde_json::Value>,
     pub scripts: Vec<serde_json::Value>,
+    #[serde(default)]
+    pub stacks: Vec<serde_json::Value>,
 }

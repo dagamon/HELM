@@ -1,0 +1,27 @@
+{
+  "name": "ember",
+  "label": "Ember",
+  "hint": "Warm amber on coal",
+  "colors": {
+    "accent": "#f59e0b",
+    "accent-hover": "#d97706",
+    "bg": "#0d0a08",
+    "surface": "#16110d",
+    "surface-hover": "#1f1812",
+    "surface-raised": "#2a201a",
+    "border": "#251c14",
+    "text": "#f4ece4",
+    "text-muted": "#9b8a7a",
+    "success": "#84cc16",
+    "warning": "#fbbf24",
+    "danger": "#ef4444"
+  },
+  "panels": {
+    "steel": "#181d29",
+    "ocean": "#102227",
+    "forest": "#152218",
+    "amber": "#281e0f",
+    "plum": "#211629",
+    "rose": "#291318"
+  }
+}

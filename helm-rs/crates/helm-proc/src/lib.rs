@@ -2,6 +2,7 @@
 //! services (health, metrics, retention, cron scheduling).
 
 pub mod health;
+pub mod host;
 pub mod job;
 pub mod log_buffer;
 pub mod metrics;
@@ -11,6 +12,7 @@ pub mod scheduler;
 pub mod status;
 
 pub use health::HealthMonitor;
+pub use host::{CpuCore, DiskInfo, HostMonitor, HostSnapshot};
 pub use log_buffer::{LogBuffer, LogEntry};
 pub use metrics::{MetricsCollector, MetricsSnapshot};
 pub use process::{LogMsg, ManagedProcess, ProcessManager, SpawnSpec};

@@ -43,6 +43,19 @@ class HelmClient:
     def service_logs(self, service_id: int, limit: int = 100) -> list[dict]:
         return self._get(f"/api/services/{service_id}/logs?limit={limit}")
 
+    # Stacks
+    def stacks(self) -> list[dict]:
+        return self._get("/api/stacks")
+
+    def resolve_stack(self, name_or_id: str) -> dict:
+        for st in self.stacks():
+            if st["name"] == name_or_id or str(st["id"]) == name_or_id:
+                return st
+        raise HelmError(f"Stack '{name_or_id}' not found")
+
+    def stack_action(self, stack_id: int, action: str) -> dict:
+        return self._post(f"/api/stacks/{stack_id}/{action}")
+
     # Scripts
     def scripts(self) -> list[dict]:
         return self._get("/api/scripts")

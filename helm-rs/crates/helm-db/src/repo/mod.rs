@@ -2,6 +2,7 @@ pub mod output_logs;
 pub mod run_logs;
 pub mod scripts;
 pub mod services;
+pub mod stacks;
 
 use anyhow::Result;
 use serde_json::Value;

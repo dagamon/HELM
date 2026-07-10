@@ -9,6 +9,14 @@ import type {
   LogLine,
   SystemInfo,
   SchedulerNextRuns,
+  Diagnostics,
+  UpdateStatus,
+  ApplyResult,
+  Stack,
+  StackCreate,
+  StackUpdate,
+  StackActionResult,
+  Theme,
 } from "./types";
 
 const BASE = "/api";
@@ -31,6 +39,19 @@ export const api = {
   // System
   health: () => request<{ status: string }>("/health"),
   systemInfo: () => request<SystemInfo>("/system/info"),
+  diagnostics: () => request<Diagnostics>("/system/diagnostics"),
+
+  // Updates
+  checkUpdate: () => request<UpdateStatus>("/update/check"),
+  applyUpdate: () => request<ApplyResult>("/update/apply", { method: "POST" }),
+
+  // Themes (read-only catalog from the themes/ folder)
+  listThemes: () => request<Theme[]>("/themes"),
+
+  // Server-side settings (shared across browsers, MCP-addressable)
+  getSetting: <T>(key: string) => request<T>(`/settings/${key}`),
+  putSetting: <T>(key: string, value: T) =>
+    request<T>(`/settings/${key}`, { method: "PUT", body: JSON.stringify(value) }),
 
   // Services CRUD
   listServices: () => request<Service[]>("/services"),
@@ -41,6 +62,11 @@ export const api = {
     request<Service>(`/services/${id}`, { method: "PUT", body: JSON.stringify(data) }),
   deleteService: (id: number) =>
     request<void>(`/services/${id}`, { method: "DELETE" }),
+  reorderServices: (ids: number[]) =>
+    request<void>("/services/reorder", {
+      method: "POST",
+      body: JSON.stringify({ ids }),
+    }),
 
   // Service actions
   startService: (id: number) =>
@@ -51,6 +77,22 @@ export const api = {
     request<{ status: string; pid: number }>(`/services/${id}/restart`, { method: "POST" }),
   getServiceLogs: (id: number, limit = 200) =>
     request<LogLine[]>(`/services/${id}/logs?limit=${limit}`),
+
+  // Stacks
+  listStacks: () => request<Stack[]>("/stacks"),
+  getStack: (id: number) => request<Stack>(`/stacks/${id}`),
+  createStack: (data: StackCreate) =>
+    request<Stack>("/stacks", { method: "POST", body: JSON.stringify(data) }),
+  updateStack: (id: number, data: StackUpdate) =>
+    request<Stack>(`/stacks/${id}`, { method: "PUT", body: JSON.stringify(data) }),
+  deleteStack: (id: number) =>
+    request<void>(`/stacks/${id}`, { method: "DELETE" }),
+  startStack: (id: number) =>
+    request<StackActionResult>(`/stacks/${id}/start`, { method: "POST" }),
+  stopStack: (id: number) =>
+    request<StackActionResult>(`/stacks/${id}/stop`, { method: "POST" }),
+  restartStack: (id: number) =>
+    request<StackActionResult>(`/stacks/${id}/restart`, { method: "POST" }),
 
   // Scripts CRUD
   listScripts: () => request<Script[]>("/scripts"),

@@ -46,4 +46,26 @@ impl Db {
             .await?;
         Ok(row.0)
     }
+
+    /// Read a settings value by key, or `None` if unset.
+    pub async fn get_setting(&self, key: &str) -> Result<Option<String>> {
+        let row: Option<(String,)> = sqlx::query_as("SELECT value FROM settings WHERE key = ?")
+            .bind(key)
+            .fetch_optional(&self.pool)
+            .await?;
+        Ok(row.map(|r| r.0))
+    }
+
+    /// Upsert a settings value by key.
+    pub async fn set_setting(&self, key: &str, value: &str) -> Result<()> {
+        sqlx::query(
+            "INSERT INTO settings (key, value, updated_at) VALUES (?, ?, datetime('now'))
+             ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = datetime('now')",
+        )
+        .bind(key)
+        .bind(value)
+        .execute(&self.pool)
+        .await?;
+        Ok(())
+    }
 }
