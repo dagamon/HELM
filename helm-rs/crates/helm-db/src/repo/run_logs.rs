@@ -49,6 +49,20 @@ pub async fn insert(pool: &SqlitePool, entity_type: &str, entity_id: i64, pid: u
     Ok(res.last_insert_rowid())
 }
 
+/// Reconcile run_logs left dangling by an ungraceful HELM shutdown.
+///
+/// On a crash / `kill -9` / power loss, `wait_for_exit` never runs, so rows stay
+/// `status='running'` forever and history/metrics misreport. Called once at
+/// startup: any still-`running` row is closed as `unknown`. Returns rows touched.
+pub async fn mark_orphans_stopped(pool: &SqlitePool) -> Result<u64> {
+    let res = sqlx::query(
+        "UPDATE run_logs SET stopped_at=datetime('now'), status='unknown' WHERE status='running'",
+    )
+    .execute(pool)
+    .await?;
+    Ok(res.rows_affected())
+}
+
 pub async fn update_stopped(
     pool: &SqlitePool,
     id: i64,

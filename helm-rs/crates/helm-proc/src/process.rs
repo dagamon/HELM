@@ -39,6 +39,15 @@ use tokio::{
 type SpawnFuture = Pin<Box<dyn Future<Output = Result<ManagedProcess>> + Send>>;
 use tracing::{info, warn};
 
+/// Crash-loop restart backoff: `min(BASE * 2^attempt, MAX)` seconds, capped at
+/// `MAX_ATTEMPTS` consecutive crashes. A process that stays up at least
+/// `STABLE_SECS` resets the counter — a service that runs fine for a while and
+/// then crashes once is not penalized as if it were crash-looping.
+const RESTART_BASE_SECS: u64 = 3;
+const RESTART_MAX_SECS: u64 = 300;
+const RESTART_MAX_ATTEMPTS: u32 = 10;
+const RESTART_STABLE_SECS: i64 = 60;
+
 /// Per-line broadcast envelope used by `/ws/logs/{type}/{id}` subscribers.
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct LogMsg {
@@ -147,11 +156,17 @@ impl ProcessManager {
     /// Returns a boxed Send future to break the type-inference cycle between
     /// `spawn` → `wait_for_exit` → `spawn` (restart-on-crash path).
     pub fn spawn(self: &Arc<Self>, spec: SpawnSpec) -> SpawnFuture {
-        let me = self.clone();
-        Box::pin(async move { me.spawn_inner(spec).await })
+        self.spawn_with_attempt(spec, 0)
     }
 
-    async fn spawn_inner(self: Arc<Self>, spec: SpawnSpec) -> Result<ManagedProcess> {
+    /// Internal spawn that carries the crash-restart attempt counter forward so
+    /// [`wait_for_exit`] can apply exponential backoff. Public `spawn` enters at 0.
+    fn spawn_with_attempt(self: &Arc<Self>, spec: SpawnSpec, attempt: u32) -> SpawnFuture {
+        let me = self.clone();
+        Box::pin(async move { me.spawn_inner(spec, attempt).await })
+    }
+
+    async fn spawn_inner(self: Arc<Self>, spec: SpawnSpec, attempt: u32) -> Result<ManagedProcess> {
         let key = spec.key();
         if self.procs.contains_key(&key) {
             return Err(anyhow!("{key} is already running"));
@@ -270,7 +285,7 @@ impl ProcessManager {
         // wait_for_exit task takes ownership of child
         let pm = self.clone();
         let slot_w = slot.clone();
-        let spec_for_restart = RespawnPlan::from_spec(&spec);
+        let spec_for_restart = RespawnPlan::from_spec(&spec, attempt);
         tokio::spawn(async move {
             pm.wait_for_exit(child, slot_w, spec_for_restart).await;
         });
@@ -508,15 +523,34 @@ impl ProcessManager {
             }
 
             if respawn.restart && slot.info.entity_type == "service" {
-                info!("restarting {key} in 3s");
-                tokio::time::sleep(Duration::from_secs(3)).await;
-                let pm = self.clone();
-                let spec = respawn.into_spec(slot.info.entity_type.clone(), slot.info.entity_id);
-                tokio::spawn(async move {
-                    if let Err(e) = pm.spawn(spec).await {
-                        warn!("restart failed: {e}");
-                    }
-                });
+                // Reset backoff if the process stayed up long enough to be "stable".
+                let uptime_secs = chrono::DateTime::parse_from_rfc3339(&slot.info.started_at)
+                    .map(|t| (Utc::now() - t.with_timezone(&Utc)).num_seconds())
+                    .unwrap_or(0);
+                let attempt = if uptime_secs >= RESTART_STABLE_SECS {
+                    0
+                } else {
+                    respawn.attempt
+                };
+                if attempt >= RESTART_MAX_ATTEMPTS {
+                    warn!(
+                        "{key}: crash-loop guard tripped after {attempt} consecutive crashes; \
+                         not restarting"
+                    );
+                } else {
+                    let delay =
+                        (RESTART_BASE_SECS.saturating_mul(1u64 << attempt)).min(RESTART_MAX_SECS);
+                    info!("restarting {key} in {delay}s (attempt {})", attempt + 1);
+                    tokio::time::sleep(Duration::from_secs(delay)).await;
+                    let pm = self.clone();
+                    let spec =
+                        respawn.into_spec(slot.info.entity_type.clone(), slot.info.entity_id);
+                    tokio::spawn(async move {
+                        if let Err(e) = pm.spawn_with_attempt(spec, attempt + 1).await {
+                            warn!("restart failed: {e}");
+                        }
+                    });
+                }
             }
         }
     }
@@ -534,12 +568,15 @@ struct RespawnPlan {
     webhook_url: Option<String>,
     name: String,
     depends_on: Vec<i64>,
+    /// Consecutive crash-restart count for this lineage; drives backoff.
+    attempt: u32,
 }
 
 impl RespawnPlan {
-    fn from_spec(s: &SpawnSpec) -> Self {
+    fn from_spec(s: &SpawnSpec, attempt: u32) -> Self {
         Self {
             restart: s.restart_on_crash,
+            attempt,
             command: s.command.clone(),
             args: s.args.clone(),
             cwd: s.cwd.clone(),

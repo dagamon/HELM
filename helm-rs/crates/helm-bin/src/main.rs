@@ -86,9 +86,18 @@ async fn main() -> Result<()> {
     let settings: Settings = Figment::new().merge(Env::raw()).extract()?;
 
     let db = helm_db::Db::connect(&settings.db_path).await?;
+
+    // Reconcile run_logs left dangling by a prior ungraceful shutdown.
+    match helm_db::repo::run_logs::mark_orphans_stopped(&db.pool).await {
+        Ok(n) if n > 0 => info!("startup: reconciled {n} orphaned run_log(s) → 'unknown'"),
+        Ok(_) => {}
+        Err(e) => tracing::warn!("startup: run_logs reconcile failed: {e}"),
+    }
+
     let log_buffer = helm_proc::LogBuffer::new(settings.log_buffer_size);
     let status = helm_proc::StatusBroadcaster::new(256);
     let pm = helm_proc::ProcessManager::new(db.clone(), log_buffer.clone(), status.clone());
+    let pm_shutdown = pm.clone();
 
     // Periodic services
     let metrics = helm_proc::MetricsCollector::new(
@@ -135,6 +144,9 @@ async fn main() -> Result<()> {
     state.dashboard_pin = settings.dashboard_pin.clone();
     state.restart_tx = Some(restart_tx);
 
+    // Start services flagged auto_start=1 (honors depends_on ordering).
+    helm_api::autostart_services(&state).await;
+
     let cwd_static = std::path::PathBuf::from("static");
     let exe_static = std::env::current_exe()
         .ok()
@@ -161,15 +173,56 @@ async fn main() -> Result<()> {
     let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app)
         .with_graceful_shutdown(async move {
-            loop {
-                if *restart_rx.borrow() {
-                    break;
+            // Shut down on either an in-app restart-server request or an OS signal
+            // (Ctrl+C / SIGTERM from NSSM/systemd), whichever comes first.
+            let restart = async move {
+                loop {
+                    if *restart_rx.borrow() {
+                        break;
+                    }
+                    if restart_rx.changed().await.is_err() {
+                        break;
+                    }
                 }
-                if restart_rx.changed().await.is_err() {
-                    break;
-                }
+            };
+            tokio::select! {
+                _ = restart => {}
+                _ = shutdown_signal() => {}
             }
         })
         .await?;
+
+    // Terminate child process trees before exiting so they are not orphaned
+    // (critical on Unix, where there is no JobObject KILL_ON_JOB_CLOSE fallback).
+    info!("shutting down: terminating managed processes");
+    pm_shutdown.shutdown().await;
     Ok(())
+}
+
+/// Resolve when the OS asks us to stop: Ctrl+C on any platform, plus SIGTERM on
+/// Unix (systemd's default stop signal).
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        let _ = tokio::signal::ctrl_c().await;
+    };
+    #[cfg(unix)]
+    {
+        let mut term = match tokio::signal::unix::signal(
+            tokio::signal::unix::SignalKind::terminate(),
+        ) {
+            Ok(s) => s,
+            Err(_) => {
+                ctrl_c.await;
+                return;
+            }
+        };
+        tokio::select! {
+            _ = ctrl_c => {}
+            _ = term.recv() => {}
+        }
+    }
+    #[cfg(not(unix))]
+    {
+        ctrl_c.await;
+    }
 }

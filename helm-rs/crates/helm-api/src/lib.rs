@@ -50,6 +50,66 @@ pub fn build_router(state: AppState) -> Router {
         .with_state(state)
 }
 
+/// Start every service flagged `auto_start=1` at boot, honoring `depends_on`
+/// ordering. Best-effort: a failed start is logged, never fatal. Services whose
+/// in-scope dependencies form a cycle (or stay unmet) are skipped with a warning.
+pub async fn autostart_services(state: &AppState) {
+    let rows = match helm_db::repo::services::list(&state.db.pool).await {
+        Ok(r) => r,
+        Err(e) => {
+            tracing::warn!("autostart: list services failed: {e}");
+            return;
+        }
+    };
+    let mut pending: Vec<_> = rows.into_iter().filter(|r| r.auto_start != 0).collect();
+    if pending.is_empty() {
+        return;
+    }
+    let ids: std::collections::HashSet<i64> = pending.iter().map(|r| r.id).collect();
+    let mut started: std::collections::HashSet<i64> = std::collections::HashSet::new();
+
+    // Iteratively start services whose auto_start dependencies are already up.
+    // Deps outside the auto_start set do not gate ordering here — `spawn` still
+    // validates they are running and fails the start otherwise.
+    let mut progress = true;
+    while progress && !pending.is_empty() {
+        progress = false;
+        let mut still = Vec::with_capacity(pending.len());
+        for row in std::mem::take(&mut pending) {
+            let deps: Vec<i64> = helm_db::repo::de_json::<Vec<i64>>(&row.depends_on)
+                .ok()
+                .flatten()
+                .unwrap_or_default();
+            let ready = deps
+                .iter()
+                .all(|d| !ids.contains(d) || started.contains(d));
+            if !ready {
+                still.push(row);
+                continue;
+            }
+            let id = row.id;
+            progress = true;
+            match routers::services::build_spawn_spec(&row).await {
+                Ok(spec) => match state.pm.spawn(spec).await {
+                    Ok(mp) => {
+                        tracing::info!("autostart: service {id} started (pid {})", mp.pid);
+                        started.insert(id);
+                    }
+                    Err(e) => tracing::warn!("autostart: spawn service {id} failed: {e}"),
+                },
+                Err(e) => tracing::warn!("autostart: build spec for service {id} failed: {e}"),
+            }
+        }
+        pending = still;
+    }
+    for row in pending {
+        tracing::warn!(
+            "autostart: service {} skipped — dependency cycle or unmet deps",
+            row.id
+        );
+    }
+}
+
 /// Helper for helm-bin to construct fresh state without re-declaring fields.
 #[allow(clippy::too_many_arguments)]
 pub fn make_state(
